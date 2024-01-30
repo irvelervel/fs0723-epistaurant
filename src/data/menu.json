@@ -106,5 +106,21 @@
         "date": "2022-10-16T17:57:28.556094Z"
       }
     ]
+  },
+  {
+    "id": 5,
+    "name": "All'Assassina",
+    "image": "https://www.lemillericette.it/wp-content/uploads/2021/02/Spaghetti-allassassina-tradizione-barese-da-provare-assolutamente.jpeg",
+    "price": "9.99",
+    "description": "Pastasciutta fatta con peperoncino a go go",
+    "comments": [
+      {
+        "id": 0,
+        "rating": 5,
+        "comment": "Stavo sputando fiamme!",
+        "author": "Alessandro Borghese",
+        "date": "2022-10-16T17:57:28.556094Z"
+      }
+    ]
   }
 ]
