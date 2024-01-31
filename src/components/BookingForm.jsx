@@ -5,7 +5,7 @@
 // "numberOfPeople" --> string/number, required
 // "smoking" --> boolean, required
 // "dateTime" --> string in ISO format, required
-// "specialRequest" --> string
+// "specialRequests" --> string
 
 import { Component } from 'react'
 import Form from 'react-bootstrap/Form'
@@ -24,8 +24,18 @@ class BookingForm extends Component {
       numberOfPeople: '1',
       smoking: false,
       dateTime: '',
-      specialRequest: '',
+      specialRequests: '',
     },
+  }
+
+  // handler che ho collegato come test a "numberOfPeople", volendo lo potreste riutilizzare anche per tutti gli altri
+  handleChange = (e, key) => {
+    this.setState({
+      reservation: {
+        ...this.state.reservation,
+        [key]: e.target.value,
+      },
+    })
   }
 
   render() {
@@ -41,17 +51,52 @@ class BookingForm extends Component {
                   type="text"
                   placeholder="Come ti chiami?"
                   required
+                  value={this.state.reservation.name}
+                  // ora mancherebbe che ad ogni keypress venga aggiornata la proprietà "name" dello stato!
+                  onChange={(e) => {
+                    // alla pressione di ogni tasto, dobbiamo aggiornare nello state.reservation
+                    // la proprietà corrispondente a questo campo
+                    this.setState({
+                      reservation: {
+                        // ok, noi qua aggiorniamo il campo "name", ma non vogliamo perdere gli altri campi
+                        // contenuti nello state corrente!
+                        ...this.state.reservation, // mi porto dentro questo nuovo oggetto gli attuali name,
+                        // phone, numberofPeople, etc.
+                        name: e.target.value, // qua ci dovrebbe andare man mano che scrivo il contenuto dell'input
+                        // ora ho sovrascritto in questo oggetto reservation la proprietà "name"
+                      },
+                    })
+                  }}
                 />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Il tuo numero di telefono</Form.Label>
-                <Form.Control type="tel" required />
+                <Form.Control
+                  type="tel"
+                  required
+                  value={this.state.reservation.phone}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        phone: e.target.value,
+                      },
+                    })
+                  }}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>In quanti siete?</Form.Label>
-                <Form.Select aria-label="numero-persone" required>
+                <Form.Select
+                  aria-label="numero-persone"
+                  required
+                  value={this.state.reservation.numberOfPeople}
+                  onChange={(e) => {
+                    this.handleChange(e, 'numberOfPeople')
+                  }}
+                >
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -64,12 +109,38 @@ class BookingForm extends Component {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Check type="checkbox" label="Tavolo fumatori?" />
+                {/* nelle checkboxes si usa prevalentemente la proprietà "checked", che lavora con un valore
+                booleano invece di "value", che lavora esclusivamente con i valori "on" e "off" */}
+                <Form.Check
+                  type="checkbox"
+                  label="Tavolo fumatori?"
+                  checked={this.state.reservation.smoking}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        smoking: e.target.checked,
+                      },
+                    })
+                  }}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Data e ora</Form.Label>
-                <Form.Control type="datetime-local" required />
+                <Form.Control
+                  type="datetime-local"
+                  required
+                  value={this.state.reservation.dateTime}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        dateTime: e.target.value,
+                      },
+                    })
+                  }}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -78,6 +149,15 @@ class BookingForm extends Component {
                   as="textarea"
                   rows={5}
                   placeholder="Allergie, cani, gatti, etc."
+                  value={this.state.reservation.specialRequests}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        specialRequests: e.target.value,
+                      },
+                    })
+                  }}
                 />
               </Form.Group>
 
