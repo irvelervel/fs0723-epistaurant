@@ -30,8 +30,9 @@ class HomepageCarousel extends Component {
                 // perfetto! mi serve per mantenere aggiornata la activePasta
                 // dovrei cambiare il valore di activePasta con la slide attualmente mostrata
                 // dovrei cambiare activePasta con pastasciutte[slideIndex]
-                // l'oggetto state è READ-ONLY
+                // l'oggetto state è READ-ONLY (sola lettura)
                 this.setState({
+                  // setState è un metodo che "fonde" un oggetto con lo stato attuale del componente
                   activePasta: pastasciutte[slideIndex],
                 })
               }}
