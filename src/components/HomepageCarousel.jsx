@@ -26,7 +26,7 @@ class HomepageCarousel extends Component {
           <Col xs={12} md={8} lg={6} className="text-center">
             <Carousel
               onSlide={(slideIndex) => {
-                console.log('slide cambiata', slideIndex)
+                // console.log('slide cambiata', slideIndex)
                 // perfetto! mi serve per mantenere aggiornata la activePasta
                 // dovrei cambiare il valore di activePasta con la slide attualmente mostrata
                 // dovrei cambiare activePasta con pastasciutte[slideIndex]

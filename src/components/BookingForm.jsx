@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button'
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
+import Alert from 'react-bootstrap/Alert'
 
 class BookingForm extends Component {
   state = {
@@ -38,13 +39,48 @@ class BookingForm extends Component {
     })
   }
 
+  handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('stato corrente', this.state.reservation)
+    // facciamo ora la chiamata POST per salvare la prenotazione
+    fetch('https://striveschool-api.herokuapp.com/api/reservation', {
+      method: 'POST',
+      body: JSON.stringify(this.state.reservation),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          // la response ci vuole dire che il salvataggio della prenotazione è andato a buon fine!
+          alert('Prenotazione salvata correttamente, grazie! :)')
+          // svuotiamo il form? sì! riportando lo stato al valore iniziale
+          this.setState({
+            reservation: {
+              name: '',
+              phone: '',
+              numberOfPeople: '1',
+              smoking: false,
+              dateTime: '',
+              specialRequests: '',
+            },
+          })
+        } else {
+          throw new Error('Errore nel salvataggio della prenotazione! :(')
+        }
+      })
+      .catch((e) => {
+        alert(e)
+      })
+  }
+
   render() {
     return (
       <Container className="my-3">
         <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
             <h2 className="text-center">Prenota un tavolo</h2>
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group className="mb-3">
                 <Form.Label>Il tuo nome</Form.Label>
                 <Form.Control
@@ -69,6 +105,22 @@ class BookingForm extends Component {
                   }}
                 />
               </Form.Group>
+
+              {/* io voglio far vedere questo Alert SOLAMENTE se una condizione sarà soddisfatta */}
+
+              {/* rendering condizionale in JSX con lo short circuit operator */}
+              {this.state.reservation.name === 'Al Bano' && (
+                <Alert variant="success">Bel nome!</Alert>
+              )}
+
+              {/* rendering condizionale in JSX con il ternary operator */}
+              {/* {this.state.reservation.name === 'Al Bano' ? (
+                <Alert variant="success">Che bel nome Al Bano!</Alert>
+              ) : this.state.reservation.name === 'Zucchero' ? (
+                <Alert variant="success">Che bel nome Zucchero!</Alert>
+              ) : (
+                <Alert variant="danger">Che brutto nome!</Alert>
+              )} */}
 
               <Form.Group className="mb-3">
                 <Form.Label>Il tuo numero di telefono</Form.Label>
@@ -161,7 +213,17 @@ class BookingForm extends Component {
                 />
               </Form.Group>
 
-              <Button variant="primary">Submit</Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={
+                  this.state.reservation.name === '' ||
+                  this.state.reservation.phone === ''
+                  //   ...continate voi :)
+                }
+              >
+                Submit
+              </Button>
             </Form>
           </Col>
         </Row>
