@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import CustomNavbar from './components/CustomNavbar'
 import HomepageCarousel from './components/HomepageCarousel'
 import BookingForm from './components/BookingForm'
+import BookingList from './components/BookingList'
 
 // questo è un import più selettivo, che nella fase di finalizzazione del progetto
 // risulterà in una cartella meno pesante (peserà meno MB)
@@ -19,6 +20,7 @@ function App() {
         <CustomNavbar subtitle="Il miglior ristorante italiano del web!" />
       </header>
       <main>
+        <BookingList />
         <BookingForm />
         <HomepageCarousel />
       </main>
