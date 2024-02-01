@@ -75,6 +75,7 @@ class BookingForm extends Component {
   }
 
   render() {
+    // console.log('RENDER NEL FORM')
     return (
       <Container className="my-3">
         <Row className="justify-content-center">
