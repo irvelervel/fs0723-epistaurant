@@ -4,12 +4,14 @@ import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Alert from 'react-bootstrap/Alert'
+import { Spinner } from 'react-bootstrap'
 
 class BookingList extends Component {
   state = {
     // questo state prima di tutto servirà a salvare i dati raccolti con la chiamata fetch()
     reservations: [], // all'inizio del caricamento del componente, facciamo posto per successivamente
     // salvare i dati, ma visto che la fetch deve ancora partire il suo valore è un array vuoto
+    isLoading: true,
   }
 
   fetchReservations = () => {
@@ -24,15 +26,19 @@ class BookingList extends Component {
         }
       })
       .then((arrayOfReservations) => {
-        console.log('prenotazioni esistenti', arrayOfReservations)
+        // console.log('prenotazioni esistenti', arrayOfReservations)
         // cosa ci faccio ora con i dati? come li inserisco nell'interfaccia?
         // quello di cui mi devo occupare io è riempire l'array reservations nello stato
         this.setState({
           reservations: arrayOfReservations,
+          isLoading: false,
         })
       })
       .catch((err) => {
         console.log(err)
+        this.setState({
+          isLoading: false,
+        })
       })
   }
 
@@ -63,7 +69,10 @@ class BookingList extends Component {
   }
 
   render() {
-    console.log('sono render!')
+    console.log(
+      'sono render! valore di this.state.reservations:',
+      this.state.reservations
+    )
     // -ATTENZIONE-
     // NON SETTARE MAI LO STATO DENTRO RENDER()
     // -> poichè un this.setState() automaticamente ri-lancia render(), e 100% ottenete un ciclo infinito
@@ -80,7 +89,16 @@ class BookingList extends Component {
             {/* la domanda è: "la lunghezza dell'array reservations nello state è maggiore di 0?" */}
             {/* se sì, prendi l'array, mappalo e ritorna un list item per ogni prenotazione */}
             {/* se no, mostra un Alert di bootstrap informando l'utente che al momento non ci sono ancora prenotazioni */}
-            {this.state.reservations.length > 0 ? (
+            {this.state.isLoading && (
+              <Spinner animation="border" variant="success"></Spinner>
+            )}
+            {/* io vorrei mostrare l'Alert NON solo quando l'array è di lunghezza 0, altrimenti
+            mi becco il messaggio anche all'avvio del componente quando la fetch è ancora in corso! */}
+            {/* io voglio invece mostrare l'Alert SOLAMENTE quando la lunghezza è 0 MA ANCHE con la sicurezza
+            che il processo di caricamento sia terminato --> this.state.reservations.length > 0 && this.state.isLoading*/}
+            {this.state.reservations.length === 0 && !this.state.isLoading ? (
+              <Alert variant="warning">Nessuna prenotazione inserita</Alert>
+            ) : (
               <ListGroup>
                 {this.state.reservations.map((booking) => {
                   return (
@@ -91,8 +109,6 @@ class BookingList extends Component {
                   )
                 })}
               </ListGroup>
-            ) : (
-              <Alert variant="warning">Nessuna prenotazione inserita</Alert>
             )}
           </Col>
         </Row>
