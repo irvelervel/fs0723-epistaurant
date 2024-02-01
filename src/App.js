@@ -1,6 +1,7 @@
 import './App.css'
 // manca il file css di Bootstrap! importiamolo qua in App.js
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import CustomNavbar from './components/CustomNavbar'
 import HomepageCarousel from './components/HomepageCarousel'
 import BookingForm from './components/BookingForm'

@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Alert from 'react-bootstrap/Alert'
-import { Spinner } from 'react-bootstrap'
+import { Button, Spinner } from 'react-bootstrap'
 
 class BookingList extends Component {
   state = {
@@ -12,6 +12,7 @@ class BookingList extends Component {
     reservations: [], // all'inizio del caricamento del componente, facciamo posto per successivamente
     // salvare i dati, ma visto che la fetch deve ancora partire il suo valore è un array vuoto
     isLoading: true,
+    isError: false,
   }
 
   fetchReservations = () => {
@@ -38,6 +39,7 @@ class BookingList extends Component {
         console.log(err)
         this.setState({
           isLoading: false,
+          isError: true,
         })
       })
   }
@@ -68,6 +70,28 @@ class BookingList extends Component {
     this.fetchReservations()
   }
 
+  deleteReservation = (reservationId) => {
+    fetch(
+      'https://striveschool-api.herokuapp.com/api/reservation/' + reservationId,
+      {
+        method: 'DELETE',
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          // elemento eliminato
+          alert('eliminato con successo')
+          // ri-chiamo fetchReservations() in modo da fetchare le prenotazioni residue
+          this.fetchReservations()
+        } else {
+          alert("problema nell'eliminazione")
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   render() {
     console.log(
       'sono render! valore di this.state.reservations:',
@@ -96,19 +120,37 @@ class BookingList extends Component {
             mi becco il messaggio anche all'avvio del componente quando la fetch è ancora in corso! */}
             {/* io voglio invece mostrare l'Alert SOLAMENTE quando la lunghezza è 0 MA ANCHE con la sicurezza
             che il processo di caricamento sia terminato --> this.state.reservations.length > 0 && this.state.isLoading*/}
-            {this.state.reservations.length === 0 && !this.state.isLoading ? (
+            {this.state.reservations.length === 0 &&
+            !this.state.isLoading &&
+            !this.state.isError ? (
               <Alert variant="warning">Nessuna prenotazione inserita</Alert>
             ) : (
               <ListGroup>
                 {this.state.reservations.map((booking) => {
                   return (
-                    <ListGroup.Item key={booking._id}>
-                      {booking.name} per {booking.numberOfPeople} il:{' '}
-                      {booking.dateTime}
+                    <ListGroup.Item
+                      key={booking._id}
+                      className="d-flex align-items-center justify-content-between"
+                    >
+                      <span>
+                        {booking.name} per {booking.numberOfPeople} il:{' '}
+                        {booking.dateTime}
+                      </span>
+                      <Button
+                        variant="danger"
+                        onClick={() => {
+                          this.deleteReservation(booking._id)
+                        }}
+                      >
+                        <i className="bi bi-trash-fill"></i>
+                      </Button>
                     </ListGroup.Item>
                   )
                 })}
               </ListGroup>
+            )}
+            {this.state.isError && (
+              <Alert variant="danger">Si è verificato un problema</Alert>
             )}
           </Col>
         </Row>
